@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghost or Not?</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(to bottom, #ffd6e7, #b8e7ff, #d8ffd6);
+    color:#111;
+    overflow-x:hidden;
+  }
+
+  nav {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 60px;
+    background:rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    position:sticky;
+    top:0;
+  }
+
+  nav h2 {
+    font-size:28px;
+    font-weight:bold;
+    color:#ff4d6d;
+  }
+
+  nav ul {
+    display:flex;
+    list-style:none;
+    gap:25px;
+  }
+
+  nav ul li {
+    cursor:pointer;
+    font-weight:600;
+    position:relative;
+  }
+
+  .dropdown {
+    display:none;
+    position:absolute;
+    top:30px;
+    left:0;
+    background:white;
+    padding:10px 0;
+    min-width:180px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  .dropdown a {
+    display:block;
+    padding:10px 20px;
+    text-decoration:none;
+    color:#111;
+  }
+
+  .dropdown a:hover {
+    background:#f2f2f2;
+  }
+
+  .tools-menu.active .dropdown {
+    display:block;
+  }
+
+  .menu-toggle {
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding:15px 20px;
+      flex-wrap:wrap;
+    }
+
+    .menu-toggle {
+      display:block;
+    }
+
+    nav ul {
+      display:none;
+      width:100%;
+      flex-direction:column;
+      gap:15px;
+      margin-top:20px;
+      background:rgba(255,255,255,0.9);
+      padding:20px;
+      border-radius:12px;
+    }
+
+    nav ul.show {
+      display:flex;
+    }
+
+    .dropdown {
+      position:static;
+      box-shadow:none;
+      margin-top:10px;
+    }
+
+    h1 {
+      font-size:40px !important;
+    }
+
+    section h2 {
+      font-size:30px !important;
+    }
+
+    button {
+      width:100%;
+      max-width:300px;
+    }
+  }
+
+  .container {
+    text-align:center;
+    background: transparent;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:none;
+  }
+
+  h1 {
+    font-size:2.5rem;
+    margin-bottom:20px;
+  }
+
+  .coin {
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background: radial-gradient(circle, #ffffff, #cfcfcf);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    margin:20px auto;
+    transition: transform 2s ease;
+    box-shadow:0 0 25px rgba(255,255,255,0.4);
+    overflow:hidden;
+  }
+
+  .ghost-mode {
+    background: url('https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=500&auto=format&fit=crop') center/cover;
+    box-shadow: 0 0 40px red;
+    animation: shake 0.3s infinite;
+  }
+
+  @keyframes shake {
+    0% { transform: translate(2px, 2px); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-2px, -2px); }
+    100% { transform: translate(2px, 2px); }
+  }
+
+  button {
+    padding:14px 28px;
+    font-size:20px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    background: linear-gradient(135deg, #ff6b6b, #ffb347);
+    color:white;
+  }
+
+  button:hover {
+    transform: scale(1.08);
+    transition:0.3s;
+    background: linear-gradient(135deg, #6a5cff, #00c6ff);
+  }
+
+  #result {
+    margin-top:20px;
+    font-size:28px;
+    font-weight:bold;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2>🛠 Useful Tools</h2>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <ul>
+    <li><a href="./index.html" style="text-decoration:none;color:#111;">Home</a></li>
+    <li class="tools-menu" onclick="toggleDropdown()">Tools
+      <div class="dropdown">
+        <a href="./ghost-finder/index.html">👻 Ghost Finder</a>
+        <a href="./toss/index.html">🪙 Toss Tool</a>
+        <a href="./spin/index.html">✏ Spin Tool</a>
+      </div>
+    </li>
+    <li><a href="#about" style="text-decoration:none;color:#111;">About</a></li>
+    <li><a href="#contact" style="text-decoration:none;color:#111;">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="container" id="homePage" style="padding-top:80px;">
+  <h1 style="font-size:70px; font-family:serif; margin-bottom:20px;">🎉 Fun Games & Tools for Kids 🎉</h1>
+  <p style="margin-bottom:60px; font-size:22px; max-width:700px; margin-inline:auto;">Play exciting mini tools made for kids! Flip a coin 🪙, find funny ghosts 👻, or spin a pencil ✏ instantly.</p>
+
+  <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+    <button onclick="window.location.href='./ghost-finder/index.html'">👻 Ghost Finder</button>
+    <button onclick="window.location.href='./toss/index.html'">🪙 Toss Tool</button>
+    <button onclick="window.location.href='./spin/index.html'">✏ Spin Tool</button>
+  </div>
+
+  
+</section>
+
+<section style="text-align:center; padding:80px 20px;">
+  <h2 style="font-size:45px; margin-bottom:20px;">Why Kids Love This?</h2>
+  <p style="font-size:20px; max-width:800px; margin:auto; line-height:1.6;">
+    🎮 Super fun games<br>✨ Cool animations<br>🚀 Instant play<br>😊 No signup needed
+  </p>
+</section>
+
+<section style="text-align:center; padding-bottom:80px;">
+  <h2 style="font-size:45px; margin-bottom:30px;">Available Tools</h2>
+  <p>👻 Ghost Finder | 🪙 Toss Tool | ✏ Spin Tool</p>
+</section>
+
+<section id="about" style="text-align:center; padding:80px 20px; background:rgba(255,255,255,0.3);">
+  <h2 style="font-size:45px; margin-bottom:20px;">About</h2>
+  <p style="font-size:20px; max-width:800px; margin:auto; line-height:1.8;">
+    Hi, I'm <strong>Sai Krish 👋</strong><br><br>
+    I created Useful Tools to make fun and simple tools that anyone can use instantly.
+    Feel free to explore and enjoy all the tools on this website.
+  </p>
+</section>
+
+<section id="contact" style="text-align:center; padding:80px 20px; background:#6a5cff; color:white;">
+  <h2 style="font-size:45px; margin-bottom:30px;">Contact</h2>
+  <p style="font-size:20px; line-height:2;">
+    Feel free to reach out — my parents help me check messages.<br><br>
+    📧 <strong>bsaikrish2016@gmail.com</strong><br>
+    📍 Pallikaranai, Chennai<br>
+    🏫 DAV School, Pallikaranai, Chennai
+  </p>
+</section>
+
+<div class="container" id="ghostPage" style="display:none;">
+  <h1>👻 Ghost or Not?</h1>
+  <div class="coin" id="coin">❓</div>
+  <button onclick="flipCoin()">Tap to Check</button>
+  <button onclick="goHome()" style="margin-top:10px;background:#444;">⬅ Back Home</button>
+  <div id="result"></div>
+</div>
+
+<!-- Preloaded ghost sound -->
+<audio id="ghostSound" preload="auto">
+  <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function toggleMenu() {
+  document.querySelector('nav ul').classList.toggle('show');
+}
+
+function toggleDropdown() {
+  document.querySelector('.tools-menu').classList.toggle('active');
+}
+
+// close dropdown when clicking outside
+window.addEventListener('click', function(e) {
+  const menu = document.querySelector('.tools-menu');
+  if (!menu.contains(e.target)) {
+    menu.classList.remove('active');
+  }
+});
+
+function showGhostGame() {
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('ghostPage').style.display = 'block';
+}
+
+function goHome() {
+  document.getElementById('ghostPage').style.display = 'none';
+  document.getElementById('homePage').style.display = 'block';
+}
+
+function flipCoin() {
+  const coin = document.getElementById('coin');
+  const result = document.getElementById('result');
+
+  result.innerHTML = "";
+  coin.style.transform = "rotateY(1440deg)";
+
+  setTimeout(() => {
+    // Ghost chance: 20%
+    const random = Math.random();
+
+    if (random < 0.2) {
+      coin.innerHTML = "";
+      coin.classList.add("ghost-mode");
+      result.innerHTML = "⚠ Ghost Found! Run!";
+      result.style.color = "#ff4d4d";
+
+      // Play horror ghost sound when ghost appears
+      const audio = document.getElementById("ghostSound");
+      audio.currentTime = 0;
+      audio.play().catch(err => console.log("Audio blocked:", err));
+    } else {
+      coin.classList.remove("ghost-mode");
+      coin.innerHTML = "😌";
+      result.innerHTML = "No Ghost";
+      result.style.color = "#00ff99";
+    }
+
+    coin.style.transform = "rotateY(0deg)";
+  }, 2000);
+}
+</script>
+
+</body>
+</html>

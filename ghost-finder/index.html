@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghost or Not?</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+  body {
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a2e, #16213e);
+    color:white;
+    overflow:hidden;
+  }
+
+  .container {
+    text-align:center;
+    background: rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter: blur(10px);
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
+  }
+
+  h1 {
+    font-size:2.5rem;
+    margin-bottom:20px;
+  }
+
+  .coin {
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background: radial-gradient(circle, #ffffff, #cfcfcf);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    margin:20px auto;
+    transition: transform 2s ease;
+    box-shadow:0 0 25px rgba(255,255,255,0.4);
+    overflow:hidden;
+  }
+
+  .ghost-mode {
+    background: url('https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=500&auto=format&fit=crop') center/cover;
+    box-shadow: 0 0 40px red;
+    animation: shake 0.3s infinite;
+  }
+
+  @keyframes shake {
+    0% { transform: translate(2px, 2px); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-2px, -2px); }
+    100% { transform: translate(2px, 2px); }
+  }
+
+  button {
+    padding:12px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#ff4d4d;
+    color:white;
+  }
+
+  button:hover {
+    background:#ff1a1a;
+  }
+
+  #result {
+    margin-top:20px;
+    font-size:28px;
+    font-weight:bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>👻 Ghost or Not?</h1>
+  <div class="coin" id="coin">❓</div>
+  <button onclick="flipCoin()">Tap to Check</button>
+  <div id="result"></div>
+</div>
+
+<!-- Preloaded ghost sound -->
+<audio id="ghostSound" preload="auto">
+  <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function flipCoin() {
+  const coin = document.getElementById('coin');
+  const result = document.getElementById('result');
+
+  result.innerHTML = "";
+  coin.style.transform = "rotateY(1440deg)";
+
+  setTimeout(() => {
+    // Ghost chance: 20%
+    const random = Math.random();
+
+    if (random < 0.2) {
+      coin.innerHTML = "";
+      coin.classList.add("ghost-mode");
+      result.innerHTML = "⚠ Ghost Found! Run!";
+      result.style.color = "#ff4d4d";
+
+      // Play horror ghost sound when ghost appears
+      const audio = document.getElementById("ghostSound");
+      audio.currentTime = 0;
+      audio.play().catch(err => console.log("Audio blocked:", err));
+    } else {
+      coin.classList.remove("ghost-mode");
+      coin.innerHTML = "😌";
+      result.innerHTML = "No Ghost";
+      result.style.color = "#00ff99";
+    }
+
+    coin.style.transform = "rotateY(0deg)";
+  }, 2000);
+}
+</script>
+
+</body>
+</html>

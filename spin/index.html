@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pencil Spin</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    overflow:hidden;
+    cursor:pointer;
+
+    /* உங்கள் screenshot மாதிரி background */
+    background: linear-gradient(
+        to bottom,
+        #dce6eb 0%,
+        #b7d4e3 40%,
+        #87c1dd 75%,
+        #73b6d7 100%
+    );
+}
+
+/* spinner area */
+.spinner-container{
+    position:relative;
+    width:300px;
+    height:300px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* dark pencil */
+.spinner{
+    width:200px;
+    height:20px;
+    background:#222;
+    border-radius:10px;
+    position:absolute;
+    transform-origin:center center;
+    transition:transform 4s ease-out;
+}
+
+/* pencil tip */
+.spinner::after{
+    content:"";
+    position:absolute;
+    right:-25px;
+    top:0;
+    width:0;
+    height:0;
+    border-left:30px solid #facc15;
+    border-top:10px solid transparent;
+    border-bottom:10px solid transparent;
+}
+
+/* eraser */
+.spinner::before{
+    content:"";
+    position:absolute;
+    left:-20px;
+    width:20px;
+    height:20px;
+    background:#ff4d6d;
+    border-radius:4px;
+}
+
+.title{
+    position:absolute;
+    top:80px;
+    font-size:40px;
+    font-weight:bold;
+    color:#111;
+}
+
+.info{
+    position:absolute;
+    bottom:60px;
+    font-size:20px;
+    color:#222;
+}
+</style>
+</head>
+<body>
+
+<div class="title">Spin Pencil</div>
+
+<div class="spinner-container">
+    <div class="spinner" id="spinner"></div>
+</div>
+
+<div class="info">Click Anywhere To Spin</div>
+
+<script>
+let currentRotation = 0;
+
+document.body.addEventListener("click", function(){
+
+    const spinner = document.getElementById("spinner");
+
+    let randomRotation = Math.floor(Math.random() * 360) + 1440;
+
+    currentRotation += randomRotation;
+
+    spinner.style.transform = `rotate(${currentRotation}deg)`;
+});
+</script>
+
+</body>
+</html>

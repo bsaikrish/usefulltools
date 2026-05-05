@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cricket Coin Toss</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to top, #87CEEB, #ffffff);
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.coin {
+    width: 200px;
+    height: 200px;
+    background: gold;
+    border-radius: 50%;
+    border: 8px solid #b8860b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    font-weight: bold;
+    margin: auto;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+}
+
+.toss {
+    animation: tossCoin 3s ease-in-out;
+}
+
+@keyframes tossCoin {
+    0% {
+        transform: translateY(0px) rotateY(0deg);
+    }
+    50% {
+        transform: translateY(-400px) rotateY(1800deg);
+    }
+    100% {
+        transform: translateY(0px) rotateY(3600deg);
+    }
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 30px;
+    font-size: 20px;
+    background: crimson;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: darkred;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: green;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏏 Cricket Toss</h1>
+
+    <div class="coin" id="coin">?</div>
+
+    <button onclick="flipCoin()">Flip Coin</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function flipCoin() {
+    const coin = document.getElementById("coin");
+    const result = document.getElementById("result");
+
+    coin.innerHTML = "?";
+    result.innerHTML = "Coin in Air...";
+
+    coin.classList.add("toss");
+
+    let interval = setInterval(function () {
+        coin.innerHTML = Math.random() < 0.5 ? "HEAD" : "TAIL";
+    }, 200);
+
+    setTimeout(function () {
+        clearInterval(interval);
+
+        let finalResult = Math.random() < 0.5 ? "HEAD" : "TAIL";
+
+        coin.innerHTML = finalResult;
+        result.innerHTML = "Result: " + finalResult;
+
+        coin.classList.remove("toss");
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
