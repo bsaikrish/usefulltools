@@ -4,46 +4,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pencil Spin</title>
-
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(to bottom, #ffd6e7, #b8e7ff, #d8ffd6);
+    color:#111;
+    overflow-x:hidden;
+  }
 
-body{
-    width:100vw;
-    height:100vh;
+  nav {
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
-    flex-direction:column;
-    overflow:hidden;
+    padding:20px 60px;
+    background:rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+
+  nav h2 {
+    font-size:28px;
+    font-weight:bold;
+    color:#ff4d6d;
+  }
+
+  nav ul {
+    display:flex;
+    list-style:none;
+    gap:25px;
+  }
+
+  nav ul li {
     cursor:pointer;
+    font-weight:600;
+    position:relative;
+  }
 
-    /* உங்கள் screenshot மாதிரி background */
-    background: linear-gradient(
-        to bottom,
-        #dce6eb 0%,
-        #b7d4e3 40%,
-        #87c1dd 75%,
-        #73b6d7 100%
-    );
-}
+  .dropdown {
+    display:none;
+    position:absolute;
+    top:30px;
+    left:0;
+    background:white;
+    padding:10px 0;
+    min-width:180px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
 
-/* spinner area */
-.spinner-container{
+  .dropdown a {
+    display:block;
+    padding:10px 20px;
+    text-decoration:none;
+    color:#111;
+  }
+
+  .dropdown a:hover {
+    background:#f2f2f2;
+  }
+
+  .tools-menu.active .dropdown {
+    display:block;
+  }
+
+  .menu-toggle {
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding:15px 20px;
+      flex-wrap:wrap;
+    }
+
+    .menu-toggle {
+      display:block;
+    }
+
+    nav ul {
+      display:none;
+      width:100%;
+      flex-direction:column;
+      gap:15px;
+      margin-top:20px;
+      background:rgba(255,255,255,0.9);
+      padding:20px;
+      border-radius:12px;
+    }
+
+    nav ul.show {
+      display:flex;
+    }
+
+    .dropdown {
+      position:static;
+      box-shadow:none;
+      margin-top:10px;
+    }
+
+    h1 {
+      font-size:40px !important;
+    }
+  }
+
+  .container {
+    text-align:center;
+    background: transparent;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:none;
+    margin-top: 50px;
+    cursor: pointer;
+  }
+
+  .spinner-container{
     position:relative;
     width:300px;
     height:300px;
     display:flex;
     justify-content:center;
     align-items:center;
-}
+    margin: 20px auto;
+  }
 
-/* dark pencil */
-.spinner{
+  .spinner{
     width:200px;
     height:20px;
     background:#222;
@@ -51,10 +140,9 @@ body{
     position:absolute;
     transform-origin:center center;
     transition:transform 4s ease-out;
-}
+  }
 
-/* pencil tip */
-.spinner::after{
+  .spinner::after{
     content:"";
     position:absolute;
     right:-25px;
@@ -64,10 +152,9 @@ body{
     border-left:30px solid #facc15;
     border-top:10px solid transparent;
     border-bottom:10px solid transparent;
-}
+  }
 
-/* eraser */
-.spinner::before{
+  .spinner::before{
     content:"";
     position:absolute;
     left:-20px;
@@ -75,45 +162,66 @@ body{
     height:20px;
     background:#ff4d6d;
     border-radius:4px;
-}
+  }
 
-.title{
-    position:absolute;
-    top:80px;
-    font-size:40px;
-    font-weight:bold;
-    color:#111;
-}
-
-.info{
-    position:absolute;
-    bottom:60px;
+  .info{
     font-size:20px;
     color:#222;
-}
+    margin-top:20px;
+  }
 </style>
 </head>
 <body>
 
-<div class="title">Spin Pencil</div>
+<nav>
+  <h2>🛠 Useful Tools</h2>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <ul>
+    <li><a href="../index.html" style="text-decoration:none;color:#111;">Home</a></li>
+    <li class="tools-menu" onclick="toggleDropdown()">Tools
+      <div class="dropdown">
+        <a href="../ghost-finder/index.html">👻 Ghost Finder</a>
+        <a href="../toss/index.html">🪙 Toss Tool</a>
+        <a href="../spin/index.html">✏ Spin Tool</a>
+      </div>
+    </li>
+    <li><a href="../index.html#about" style="text-decoration:none;color:#111;">About</a></li>
+    <li><a href="../index.html#contact" style="text-decoration:none;color:#111;">Contact</a></li>
+  </ul>
+</nav>
 
-<div class="spinner-container">
-    <div class="spinner" id="spinner"></div>
+<div class="container" id="spinContainer">
+  <h1 style="font-size:70px; font-family:serif; margin-bottom:20px;">✏ Spin Pencil</h1>
+  
+  <div class="spinner-container">
+      <div class="spinner" id="spinner"></div>
+  </div>
+
+  <div class="info">Click Anywhere Here To Spin</div>
 </div>
 
-<div class="info">Click Anywhere To Spin</div>
-
 <script>
+function toggleMenu() {
+  document.querySelector('nav ul').classList.toggle('show');
+}
+
+function toggleDropdown() {
+  document.querySelector('.tools-menu').classList.toggle('active');
+}
+
+window.addEventListener('click', function(e) {
+  const menu = document.querySelector('.tools-menu');
+  if (!menu.contains(e.target)) {
+    menu.classList.remove('active');
+  }
+});
+
 let currentRotation = 0;
 
-document.body.addEventListener("click", function(){
-
+document.getElementById("spinContainer").addEventListener("click", function(){
     const spinner = document.getElementById("spinner");
-
     let randomRotation = Math.floor(Math.random() * 360) + 1440;
-
     currentRotation += randomRotation;
-
     spinner.style.transform = `rotate(${currentRotation}deg)`;
 });
 </script>

@@ -7,22 +7,122 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
   body {
-    height:100vh;
+    min-height:100vh;
+    background: linear-gradient(to bottom, #ffd6e7, #b8e7ff, #d8ffd6);
+    color:#111;
+    overflow-x:hidden;
+  }
+
+  nav {
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
-    background: linear-gradient(135deg, #0f0f0f, #1a1a2e, #16213e);
-    color:white;
-    overflow:hidden;
+    padding:20px 60px;
+    background:rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    position:sticky;
+    top:0;
+  }
+
+  nav h2 {
+    font-size:28px;
+    font-weight:bold;
+    color:#ff4d6d;
+  }
+
+  nav ul {
+    display:flex;
+    list-style:none;
+    gap:25px;
+  }
+
+  nav ul li {
+    cursor:pointer;
+    font-weight:600;
+    position:relative;
+  }
+
+  .dropdown {
+    display:none;
+    position:absolute;
+    top:30px;
+    left:0;
+    background:white;
+    padding:10px 0;
+    min-width:180px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  .dropdown a {
+    display:block;
+    padding:10px 20px;
+    text-decoration:none;
+    color:#111;
+  }
+
+  .dropdown a:hover {
+    background:#f2f2f2;
+  }
+
+  .tools-menu.active .dropdown {
+    display:block;
+  }
+
+  .menu-toggle {
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding:15px 20px;
+      flex-wrap:wrap;
+    }
+
+    .menu-toggle {
+      display:block;
+    }
+
+    nav ul {
+      display:none;
+      width:100%;
+      flex-direction:column;
+      gap:15px;
+      margin-top:20px;
+      background:rgba(255,255,255,0.9);
+      padding:20px;
+      border-radius:12px;
+    }
+
+    nav ul.show {
+      display:flex;
+    }
+
+    .dropdown {
+      position:static;
+      box-shadow:none;
+      margin-top:10px;
+    }
+
+    h1 {
+      font-size:40px !important;
+    }
+
+    button {
+      width:100%;
+      max-width:300px;
+    }
   }
 
   .container {
     text-align:center;
-    background: rgba(255,255,255,0.08);
+    background: transparent;
     padding:30px;
     border-radius:20px;
-    backdrop-filter: blur(10px);
-    box-shadow:0 0 20px rgba(0,0,0,0.5);
+    box-shadow:none;
+    margin-top: 50px;
   }
 
   h1 {
@@ -60,17 +160,19 @@
   }
 
   button {
-    padding:12px 25px;
-    font-size:18px;
+    padding:14px 28px;
+    font-size:20px;
     border:none;
-    border-radius:10px;
+    border-radius:50px;
     cursor:pointer;
-    background:#ff4d4d;
+    background: linear-gradient(135deg, #ff6b6b, #ffb347);
     color:white;
   }
 
   button:hover {
-    background:#ff1a1a;
+    transform: scale(1.08);
+    transition:0.3s;
+    background: linear-gradient(135deg, #6a5cff, #00c6ff);
   }
 
   #result {
@@ -82,8 +184,25 @@
 </head>
 <body>
 
+<nav>
+  <h2>🛠 Useful Tools</h2>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <ul>
+    <li><a href="../index.html" style="text-decoration:none;color:#111;">Home</a></li>
+    <li class="tools-menu" onclick="toggleDropdown()">Tools
+      <div class="dropdown">
+        <a href="../ghost-finder/index.html">👻 Ghost Finder</a>
+        <a href="../toss/index.html">🪙 Toss Tool</a>
+        <a href="../spin/index.html">✏ Spin Tool</a>
+      </div>
+    </li>
+    <li><a href="../index.html#about" style="text-decoration:none;color:#111;">About</a></li>
+    <li><a href="../index.html#contact" style="text-decoration:none;color:#111;">Contact</a></li>
+  </ul>
+</nav>
+
 <div class="container">
-  <h1>👻 Ghost or Not?</h1>
+  <h1 style="font-size:70px; font-family:serif; margin-bottom:20px;">👻 Ghost or Not?</h1>
   <div class="coin" id="coin">❓</div>
   <button onclick="flipCoin()">Tap to Check</button>
   <div id="result"></div>
@@ -95,6 +214,22 @@
 </audio>
 
 <script>
+function toggleMenu() {
+  document.querySelector('nav ul').classList.toggle('show');
+}
+
+function toggleDropdown() {
+  document.querySelector('.tools-menu').classList.toggle('active');
+}
+
+// close dropdown when clicking outside
+window.addEventListener('click', function(e) {
+  const menu = document.querySelector('.tools-menu');
+  if (!menu.contains(e.target)) {
+    menu.classList.remove('active');
+  }
+});
+
 function flipCoin() {
   const coin = document.getElementById('coin');
   const result = document.getElementById('result');
@@ -120,7 +255,7 @@ function flipCoin() {
       coin.classList.remove("ghost-mode");
       coin.innerHTML = "😌";
       result.innerHTML = "No Ghost";
-      result.style.color = "#00ff99";
+      result.style.color = "#ff4d6d";
     }
 
     coin.style.transform = "rotateY(0deg)";
