@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cricket Toss - A simple and fun coin toss tool. Flip a coin instantly for heads or tails.">
+<meta name="keywords" content="cricket toss, coin toss, flip a coin, heads or tails, online coin flip, kids games">
 <title>Cricket Toss</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
@@ -205,6 +207,46 @@
     <div id="result"></div>
 </div>
 
+<!-- Synthesized Coin Sounds -->
+<script>
+function playCoinFlipSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    osc.frequency.linearRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+    osc.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.0);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 1.0);
+  } catch(e) {}
+}
+
+function playCoinLandSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1500, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.5);
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.5);
+  } catch(e) {}
+}
+</script>
+
 <script>
 function toggleMenu() {
   document.querySelector('nav ul').classList.toggle('show');
@@ -230,6 +272,8 @@ function flipCoin() {
     result.style.color = "#111";
 
     coin.classList.add("toss");
+    
+    playCoinFlipSound();
 
     let interval = setInterval(function () {
         coin.innerHTML = Math.random() < 0.5 ? "HEAD" : "TAIL";
@@ -245,6 +289,8 @@ function flipCoin() {
         result.style.color = "green";
 
         coin.classList.remove("toss");
+        
+        playCoinLandSound();
     }, 3000);
 }
 </script>

@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ghost or Not?</title>
+<meta name="description" content="Useful Tools - Play exciting mini tools and games made for kids! Flip a coin, find funny ghosts, or spin a pencil instantly.">
+<meta name="keywords" content="kids games, mini tools, coin toss, pencil spin, ghost finder, fun games, instant play">
+<title>Usefull Tools</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
   body {
@@ -256,10 +258,35 @@
   <div id="result"></div>
 </div>
 
-<!-- Preloaded ghost sound -->
-<audio id="ghostSound" preload="auto">
-  <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
-</audio>
+<!-- Synthesized Ghost Sound -->
+<script>
+function playSpookySound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'sine'; // Smooth, eerie sound
+    
+    // Spooky wobbly frequency
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.5);
+    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 1.5);
+    
+    // Fade in and out
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.2);
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+    
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 1.5);
+  } catch(e) { 
+    console.log("Audio not supported:", e); 
+  }
+}
+</script>
 
 <script>
 function toggleMenu() {
@@ -305,10 +332,8 @@ function flipCoin() {
       result.innerHTML = "⚠ Ghost Found! Run!";
       result.style.color = "#ff4d4d";
 
-      // Play horror ghost sound when ghost appears
-      const audio = document.getElementById("ghostSound");
-      audio.currentTime = 0;
-      audio.play().catch(err => console.log("Audio blocked:", err));
+      // Play synthesized horror ghost sound when ghost appears
+      playSpookySound();
     } else {
       coin.classList.remove("ghost-mode");
       coin.innerHTML = "😌";

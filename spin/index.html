@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pencil Spin - An interactive digital pencil spinner. Just tap to spin the pencil! Fun and easy to use.">
+<meta name="keywords" content="pencil spin, digital spinner, spin the pencil, fun tools, kids games, instant play">
 <title>Pencil Spin</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
@@ -200,6 +202,30 @@
   <div class="info">Click Anywhere Here To Spin</div>
 </div>
 
+<!-- Synthesized Spin Sound -->
+<script>
+function playSpinSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'sawtooth'; // Gives a slightly rough, whirring sound
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 4.0); // Pitch drops
+    
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.1); // Quick fade in
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 4.0); // Slow fade out matching spin
+    
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 4.0);
+  } catch(e) {}
+}
+</script>
+
 <script>
 function toggleMenu() {
   document.querySelector('nav ul').classList.toggle('show');
@@ -223,6 +249,7 @@ document.getElementById("spinContainer").addEventListener("click", function(){
     let randomRotation = Math.floor(Math.random() * 360) + 1440;
     currentRotation += randomRotation;
     spinner.style.transform = `rotate(${currentRotation}deg)`;
+    playSpinSound();
 });
 </script>
 
