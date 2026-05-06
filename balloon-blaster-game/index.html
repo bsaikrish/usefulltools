@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balloon Blaster</title>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(to bottom, #ffd6e7, #b8e7ff, #d8ffd6);
+    color:#111;
+    overflow:hidden; /* keeps balloons from creating scrollbars */
+    text-align:center;
+  }
+
+  nav {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 60px;
+    background:rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    position:sticky;
+    top:0;
+    z-index:1000;
+  }
+
+  nav h2 {
+    font-size:28px;
+    font-weight:bold;
+    color:#ff4d6d;
+  }
+
+  nav ul {
+    display:flex;
+    list-style:none;
+    gap:25px;
+  }
+
+  nav ul li {
+    cursor:pointer;
+    font-weight:600;
+    position:relative;
+  }
+
+  .dropdown {
+    display:none;
+    position:absolute;
+    top:30px;
+    left:0;
+    background:white;
+    padding:10px 0;
+    min-width:180px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    z-index: 1001;
+    text-align: left;
+  }
+
+  .dropdown a {
+    display:block;
+    padding:10px 20px;
+    text-decoration:none;
+    color:#111;
+  }
+
+  .dropdown a:hover {
+    background:#f2f2f2;
+  }
+
+  .tools-menu.active .dropdown {
+    display:block;
+  }
+
+  .menu-toggle {
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding:15px 20px;
+      flex-wrap:wrap;
+    }
+
+    .menu-toggle {
+      display:block;
+    }
+
+    nav ul {
+      display:none;
+      width:100%;
+      flex-direction:column;
+      gap:15px;
+      margin-top:20px;
+      background:rgba(255,255,255,0.9);
+      padding:20px;
+      border-radius:12px;
+    }
+
+    nav ul.show {
+      display:flex;
+    }
+
+    .dropdown {
+      position:static;
+      box-shadow:none;
+      margin-top:10px;
+    }
+  }
+
+  #gameContainer {
+    position: absolute;
+    top: 80px; /* offset for nav */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    pointer-events: none; /* let clicks through to buttons if needed */
+  }
+
+  #score {
+    position:relative;
+    margin-top: 20px;
+    font-size:30px;
+    font-weight:bold;
+    color:#111;
+    z-index: 10;
+  }
+
+  #gameOver {
+    display:none;
+    position:absolute;
+    top:40%;
+    width:100%;
+    font-size:50px;
+    color:red;
+    font-weight:bold;
+    z-index: 10;
+  }
+
+  #restartBtn {
+    display:none;
+    position:absolute;
+    top:55%;
+    left:50%;
+    transform:translateX(-50%);
+    padding:14px 28px;
+    font-size:20px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    background: linear-gradient(135deg, #ff6b6b, #ffb347);
+    color:white;
+    z-index: 10;
+  }
+
+  #restartBtn:hover {
+    transform: translateX(-50%) scale(1.08);
+    transition:0.3s;
+    background: linear-gradient(135deg, #6a5cff, #00c6ff);
+  }
+
+  .balloon {
+    position:absolute;
+    width:100px;
+    height:130px;
+    border-radius:50%;
+    cursor:pointer;
+    animation:fall linear forwards;
+    pointer-events: auto; /* balloons receive clicks */
+  }
+
+  .balloon::after {
+    content:"";
+    position:absolute;
+    width:3px;
+    height:40px;
+    background:rgba(0,0,0,0.5);
+    bottom:-40px;
+    left:50%;
+  }
+
+  @keyframes fall {
+    from { top:-200px; }
+    to { top:100vh; }
+  }
+
+  .pop {
+    animation:blast 0.3s forwards;
+  }
+
+  @keyframes blast {
+    0% { transform:scale(1); opacity:1; }
+    100% { transform:scale(2); opacity:0; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2>🛠 Useful Tools</h2>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <ul>
+    <li><a href="../index.html" style="text-decoration:none;color:#111;">Home</a></li>
+    <li class="tools-menu" onclick="toggleDropdown()">Tools
+      <div class="dropdown">
+        <a href="../ghost-finder/index.html">👻 Ghost Finder</a>
+        <a href="../toss/index.html">🪙 Toss Tool</a>
+        <a href="../spin/index.html">✏ Spin Tool</a>
+        <a href="../balloon-blaster-game/index.html">🎈 Balloon Blaster</a>
+        <a href="../star-catcher-game/index.html">⭐ Star Catcher</a>
+      </div>
+    </li>
+    <li><a href="../index.html#about" style="text-decoration:none;color:#111;">About</a></li>
+    <li><a href="../index.html#contact" style="text-decoration:none;color:#111;">Contact</a></li>
+  </ul>
+</nav>
+
+<div id="score">Score: 0</div>
+<div id="gameOver">💥 GAME OVER 💥</div>
+<button id="restartBtn">🔄 Restart Game</button>
+
+<div id="gameContainer"></div>
+
+<!-- Synthesized Pop Sound -->
+<script>
+function playPopSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.1);
+  } catch(e) {}
+}
+
+function toggleMenu() {
+  document.querySelector('nav ul').classList.toggle('show');
+}
+
+function toggleDropdown() {
+  document.querySelector('.tools-menu').classList.toggle('active');
+}
+
+window.addEventListener('click', function(e) {
+  const menu = document.querySelector('.tools-menu');
+  if (menu && !menu.contains(e.target)) {
+    menu.classList.remove('active');
+  }
+});
+
+let score = 0;
+let gameEnded = false;
+let gameInterval;
+const gameContainer = document.getElementById("gameContainer");
+
+function createBalloon(){
+    if(gameEnded) return;
+
+    const balloon = document.createElement("div");
+    balloon.classList.add("balloon");
+
+    const colors=["#ff4d4d","#4d79ff","#00cc66","#ffcc00","#ff66b3","#9933ff"];
+    balloon.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+    balloon.style.left=Math.random()*(window.innerWidth-120)+"px";
+
+    let duration=Math.random()*2+2;
+    balloon.style.animationDuration=duration+"s";
+
+    gameContainer.appendChild(balloon);
+
+    balloon.addEventListener("click",()=>{
+        if(gameEnded) return;
+
+        playPopSound();
+
+        balloon.classList.add("pop");
+
+        score++;
+        document.getElementById("score").innerText = "Score: " + score;
+
+        setTimeout(()=>{
+            balloon.remove();
+        },300);
+    });
+
+    setTimeout(()=>{
+        if(balloon.parentNode && !balloon.classList.contains("pop")){
+            gameOver();
+            balloon.remove();
+        }
+    },duration*1000);
+}
+
+function startGame(){
+    gameEnded = false;
+    score = 0;
+    document.getElementById("score").innerText = "Score: 0";
+
+    document.getElementById("gameOver").style.display = "none";
+    document.getElementById("restartBtn").style.display = "none";
+
+    document.querySelectorAll(".balloon").forEach(b => b.remove());
+
+    gameInterval = setInterval(createBalloon, 800);
+}
+
+function gameOver(){
+    gameEnded = true;
+    clearInterval(gameInterval);
+
+    document.getElementById("gameOver").style.display = "block";
+    document.getElementById("restartBtn").style.display = "block";
+}
+
+document.getElementById("restartBtn").addEventListener("click", startGame);
+
+// Start first time
+startGame();
+</script>
+
+</body>
+</html>
